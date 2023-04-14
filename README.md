@@ -1,2 +1,1 @@
-# JointAppearanceAdaptation
-Original code for joint appearance adaptation for unsupervised domain adaptation
+## Deep Domain Adaptation by Joint Appearance Adaptation
