@@ -1,0 +1,197 @@
+# Documentation of the configuration files
+# The following placeholders may be used for paths
+# - ~CONFIG will be replaced by absolute path of the folder containing the config file
+# - ~CHCONFIG will be replaced by absolute path of the folder containing the child config file (LEAF-NODE)
+
+# ================================ BEGIN ATTRIBUTES ====================================
+
+# BASE: ~CONFIG/../local_paths.yaml  # Config file to inherit from
+
+PATHS: # ----------------- Contains the absolute or relative data paths to the dataset folders
+  GeoNRW: ""
+
+MODE: "" # --------------- Experiment mode ['source_training', 'domain_adaptation', 'dataset']
+STAGE: "" # -------------- Experiment stage ['train', 'eval', 'eval-appa', 'describe']
+SD: "" # ----------------- Source Domain (domain for supervised training)
+#                          This is also the domain that will be evaluated in STAGE = 'eval'
+TD: "" # ----------------- Target Domain (used for domain adaptation)
+CUDA: "" # --------------- CUDA device to use: str(ID)
+
+RANDOM_SEED: 0 # --------- Random seed for torch and numpy
+VRBS: 1 # ---------------- Verbosity controls the amount of prints (level 0-3). 0: silent (no prints),
+#                          1: standard prints about init, 2: more information per epoch and 3: information about timing
+
+DATA: # ------------------- Data and label configuration / declaration
+  N_CHN: 4 # ---------------- Number of regular channels (e.g. IR/R/G/DSM => 4)
+  NCLS: 4 # ----------------- Number of target classes >= 2 (Binary segmentation is implemented as NCLS = 2)
+  IGNORE_INDEX: 4 # --------- Class label index to be ignored (during training AND evaluation)
+
+AUG: # -------------------- Online data augmentation
+  PRECROP: True # ----------- Perform a cropping before rotation/rescaling
+  ROTATE: True # ------------ Apply random rotations
+  FLIP: True # -------------- Apply random flipping
+  RAND_RESCALE: [90, 110] # - Apply random rescaling -> [min_pct, max_pct] or False
+  RESCALE_SYM: True # ------- Use same scaling factor for both axis?
+  RADIO_SCALE: 0.1 # -------- Strength of radiometric augmentation
+  #                           Note that main.may_augment_radiometric is used for the radiometric augmentation
+  INTERPOLATE: True # ------- Use bi-linear (True) or nearest-neighbour (False) interpolation
+  #                           Affects random rotations and rescaling
+  #                           Note that for the references nearest-neighbour interpolation is used
+
+SEG_MODEL: # -------------- Segmentation network
+  IN_CHN: 3 # --------------- Number of ingoing channels
+  OUT_CHN: 4 # -------------- Number of outgoing channels
+  TYPE: "unet" # ------------ Architecture type ['unet', ]
+  UNET: # ------------------- UNET with Xception ResNet backbone
+    DEPTH: 4 # ---------------- Depth of U-Net [3-5] (Number of downsampling stages)
+    BACKBONE: "xception" # ---- Backbone type ['xception',]
+    PRETRAINED: True # -------- Use pretrained weights for encoder (trained on imagenet)?
+
+AP_AD_MODEL: # ------------ Appearance adaptation network
+  IN_CHN: 3 # --------------- Number of ingoing channels
+  OUT_CHN: 3 # -------------- Number of outgoing channels
+  TYPE: "res_fcn" # --------- Architecture type ['res_fcn',]
+  RNET: # ------------------- Simple RNET (Tower of Power)
+    NUM_BLOCKS: 15 # ---------- Number of residual blocks
+    NUM_FEAT: 256 # ----------- Number of features in each block
+    SCALE: 4 # ---------------- Operational scale
+    DROPRATE: 0.0 # ----------- Rate of dropout (0.0=Off)
+
+AP_DIS_MODEL: # ----------- Appearance discriminator ('tsai2' will create two discriminators)
+  IN_CHN: 3 # --------------- Number of ingoing channels
+  OUT_CHN: 1 # -------------- Number of outgoing channels
+  SHIFT: False # ------------ Shift input before processing
+  TYPE: "cnn" # ------------- Architecture type ['cnn', 'patch-gan', 'benjdira']
+
+AUX_GEN_MODEL: # ----------- Aux Generator (Generates samples to compensate label-distribution diffs.)
+  IN_CHN: 64 # --------------- Number of ingoing channels (features)
+  OUT_CHN: 16 # -------------- Number of outgoing channels (features)
+  TYPE: "tconf" # ------------ Architecture type ['tconf',]
+  DROPRATE: 0.0 # ------------ Rate of dropout (0.0=Off)
+  START_SIZE: 4 # ------------ Should be set to TRAIN.IN_SIZE//32
+
+RP_DIS_MODEL: # ----------- Representation discriminator
+  IN_CHN: 3 # --------------- Number of ingoing channels
+  OUT_CHN: 1 # -------------- Number of outgoing channels
+  TYPE: "mlp" # ------------- Architecture type ['cnn', 'mlp', 'ran', 'dcgan', 'advent', 'tsai', 'tsai2']
+  NUM_F_START: 64 # --------- Number of features in the first layer
+
+TRAIN: # ------------------ Parameters regarding network training
+  SD_SET: "train" # --------- Training set ['train', 'all'] (for source domain)
+  TD_SET: "all" # ----------- Training set ['train', 'all'] (for target domain)
+  IT_P_EP: 1000 # ----------- Number of training iterations per epoch
+  N_EP_MAX: 100 # ----------- Maximum number of epochs
+  EARLY_STOPPING_EP: 15 # --- Number of epochs after which training is stopped if val score does not improve
+  BTSZ: 32 # ---------------- Batchsize
+  IN_SIZE: 128 # ------------ Size of input patches (square)
+  NUM_WK: 1 # --------------- Number of workers for loading training data (SD and TD)
+  PREFETCH_FACTOR: 8 # ------ ?
+  LOSS: # ------------------- Supervised classification loss
+    TYPE: "ce" # -------------- Loss to use in ['ce','ace', 'focal', 'dice', 'mae']
+#                               ce: cross entropy
+#                               ace: adaptive cross entropy (uses class performance for weighting)
+#                               focal: multi-class focal loss
+#                               dice: dice loss
+#                               mae: mean absolute error (of distributions)
+    ACE_POW: 1.0 # ------------ Parameter of Adaptive CE
+    FCL_GAMMA: 1.0 # ---------- Parameter of Focal loss
+    WEIGHTING: '' # ----------- Initial class-weighting strategy (Currently unused / not implemented)
+  SEG: # -------------------- Segmentation network optimizer configuration
+    OPTIM: "sgd" # ------------ Optimiser of Segmentation network in ['sgd', 'adam']
+    LR: 0.002 # --------------- Learning rate of Segmentation model
+    BETA1: 0.9 # -------------- Momentum
+    BETA2: 0.99 # ------------- 2nd momentum for ADAM
+    WDEC: 1e-5 # -------------- Weight decay (0.0 = Off)
+    LR_DEC: 1.0 # ------------- Decay of learning rate. LRe = LR*LR_DEC**e (1.0 = Off)
+  AP_AD: # ------------------ Appearance adaptation network optimizer configuration
+    OPTIM: "adam" # ----------- Optimiser of Generator (I2I) network in ['sgd', 'adam']
+    LR: 0.0005 # -------------- Learning rate of model
+    BETA1: 0.5 # -------------- Momentum
+    BETA2: 0.99 # ------------- 2nd momentum for ADAM
+    WDEC: 0.0 # --------------- Weight decay (0.0 = Off)
+    LR_DEC: 1.0 # ------------- Decay of learning rate. LRe = LR*LR_DEC**e (1.0 = Off)
+  AP_DIS: # ----------------- Appearance discriminator network optimizer configuration
+    OPTIM: "adam" # ----------- Optimiser of Discriminator network(s) in ['sgd', 'adam']
+    LR: 0.0001 # -------------- Learning rate of model
+    BETA1: 0.5 # -------------- Momentum
+    BETA2: 0.999 # ------------ 2nd momentum for ADAM
+    WDEC: 0.0 # --------------- Weight decay (0.0 = Off)
+    LR_DEC: 1.0 # ------------- Decay of learning rate. LRe = LR*LR_DEC**e (1.0 = Off)
+  AUX_GEN: # ---------------- Auxiliary generator network optimizer configuration
+    OPTIM: "adam" # ----------- Optimiser of aux-Generator network in ['sgd', 'adam']
+    LR: 0.0005 # -------------- Learning rate of model
+    BETA1: 0.5 # -------------- Momentum
+    BETA2: 0.999 # ------------ 2nd momentum for ADAM
+    WDEC: 0.0 # --------------- Weight decay (0.0 = Off)
+    LR_DEC: 1.0 # ------------- Decay of learning rate. LRe = LR*LR_DEC**e (1.0 = Off)
+  RP_DIS: # ----------------- Representation discriminator network optimizer configuration
+    OPTIM: "adam" # ----------- Optimiser of Discriminator network(s) in ['sgd', 'adam']
+    LR: 0.0005 # -------------- Learning rate of model
+    BETA1: 0.5 # -------------- Momentum
+    BETA2: 0.999 # ------------ 2nd momentum for ADAM
+    WDEC: 0.0 # --------------- Weight decay (0.0 = Off)
+    LR_DEC: 1.0 # ------------- Decay of learning rate. LRe = LR*LR_DEC**e (1.0 = Off)
+
+DA: # --------------------- Settings for domain adaptation
+  DO_APPA: False # ---------- Do appearance adaptation (-> AA Net and image discriminator)
+  DO_REPA: False # ---------- Do representation adaptation (-> Representation discriminator)
+  DO_ENTMIN: False # -------- Do entropy minimization
+  AUX_GEN: False # ---------- Use auxiliary image generator (Requires DO_APPA!)
+  NON_AUX_BS: 2 # ----------- If AUX_GAN is used, NON_AUX_BS from APPA are used to control ratio
+  REQUIRES_SD: True # ------- If False, no SD data will be loaded (faster adaBN)
+  SHARED_FW: False # -------- Shared FW-pass of SD/TD samples
+  BATCH_NORM: 'SD' # -------- Set to use to update running averages in BN layers ['None', 'SD', 'TD', 'MIX', 'S2T']
+  REP_LAYER: 'decoder' # ---- Which layer to use for representation matching ['enoder', 'decoder', 'ent_maps', 'tsai2']
+  REP_ENCODER_STAGE: 3 # ---- Which layer [0 - UNET.DEPTH+1]? (only required for REP_LAYER in ['encoder', 'tsai2'])
+
+  SEG_PATIENCE: 2 # --------- Epochs to wait before SEG is updated (e>=X)
+  APPA_WARMUP: 0 # ---------- Epochs to train appa only on source should be <= SEG_PATIENCE
+
+  APPA_SHIFT: True # -------- Make a random shift of adapted images before passing them to S
+  DIS_REG: 4.0 # ------------ STD-Dev Regularization of the Discriminator
+  W_SUP: 1.0 # -------------- Weight of supervised loss
+  W_TRA: 2.0 # -------------- Weight of supervised loss of adapted images
+  W_GAN: 2.0 # -------------- Weight of GAN loss
+  W_REP: 1.0 # -------------- Weight of Adv. representation matching loss
+  W_ENT: 1.0 # -------------- Weight of target domain entropy loss
+
+EVALUATION: # ------------- Settings for model evaluation (during training or standalone)
+  METRIC: "mF1" # ----------- Evaluation metric [mF1, OA]
+  SD_VAL_SET: "val" # ------- Validation set ['', 'val', 'test', 'traintest', 'test_all', 'all']
+  SD_TEST_SET: "test" # ----- Test set ['', 'val', 'test', 'traintest', 'test_all', 'all']
+  TD_VAL_SET: "val" # ------- Validation set for entropy ES ['', 'val', 'test', 'traintest', 'test_all', 'all']
+  TD_TEST_SET: "test" # ----- Target domain test set ['', 'test', 'traintest', 'test_all', 'all']
+  IN_SIZE: 256 # ------------ Size of input patches (square)
+  SW_SHIFT: 128 # ----------- Sliding Window shift
+  FLIP: False # ------------- Use 8 permutations for evaluation
+  ENTROPY: False # ---------- Compute entropy maps
+  MIN_ENT_ITER: 25 # -------- Minimum number of iterations before saving min entropy model
+
+CHECKPOINTS: # ------------ Settings for loading / saving models
+  LOAD_INIT: "" # ----------- Path to initial model(s) (for retraining/adaptation).
+#                             This checkpoint will only be used if there is no native (latest) training checkpoint
+  LOAD_FROM: "" # ----------- Path to checkpoint (when loading for testing).
+#                             This checkpoint will be used in any case!
+  LOAD_STRICT: True # ------- Don't allow differences to loaded checkpoint
+  SAVE: True # -------------- Save checkpoints?
+  LOAD: True # -------------- Load checkpoints?
+  LOAD_OPT: True # ---------- Load optimizer(s)?
+
+OUTPUTS: # ---------------- Settings for all outputs (e.g. images)
+  GRID: 0 # ----------------- Draw grid on outputs images (0 = Off)
+  IMAGE_EXT: 'jpg' # -------- Save images lossless as 'png' or lossy as 'jpg'
+  SAVE_SINGLE: False # ------ Stack output images to single image
+  SAVE_TRAIN: False # ------- Save training examples
+  SAVE_TDOM_TRAIN: False # -- Save target domain samples
+  SAVE_VAL: False # --------- Save validation predictions
+  SAVE_TEST: False # -------- Save test-set predictions
+  SAVE_TDOM: False # -------- Save target domain predictions
+  FOLDER: "~CONFIG/def" # --- Root path to outputs (exp. name)
+
+STATS:
+  DOM: ""
+  SET: ""
+  CLASS_STATS: True
+  CHANNEL_STATS: True
+
+VERSION: 1.17

@@ -1,0 +1,31 @@
+# conda env create -f environment.yml
+
+name: jda
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+  - anaconda
+dependencies:
+  - python=3.9.7 #python=3.10.2
+  - cudatoolkit=11.3
+  - pytorch::pytorch=1.10.0
+  - pytorch::torchvision=0.11.1
+  - gdal>3.3
+  - matplotlib
+  - conda-forge::numba=0.54.1 #0.55.0
+  - seaborn
+  - imageio
+  - tifffile
+  - scipy
+  - scikit-image
+  - scikit-learn
+  - numpy
+  - pyyaml
+  - bunch
+  - rasterio
+  - pip
+  - deprecated
+  - pip:
+    - segmentation-models-pytorch
+    - git+http://www.github.com/denniswittich/dw.git

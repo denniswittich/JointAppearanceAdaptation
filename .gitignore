@@ -1,0 +1,17 @@
+exp/*
+.idea
+results
+fast_data/*
+datasets/*
+runs/*
+0_old_results/*
+code/*.bat
+code/__pycache__
+code/.idea
+code/hosts
+code/hosts2
+*.npz
+
+
+/code/stuff/hosts2
+/code/stuff/hosts
