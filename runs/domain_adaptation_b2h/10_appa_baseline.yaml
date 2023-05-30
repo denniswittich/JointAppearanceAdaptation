@@ -1,0 +1,21 @@
+BASE: ~CONFIG/00_shared_config_train.yaml
+
+DA:
+  DO_APPA: True
+  DO_REPA: False
+  DO_ENTMIN: False
+  AUX_GEN: False
+  REQUIRES_SD: True
+  BATCH_NORM: 'SD'
+  SHARED_FW: False
+  SEG_PATIENCE: 2
+  APPA_SHIFT: True
+  DIS_REG: 0.0
+  W_SUP: 1.0
+  W_TRA: 2.0
+  W_GAN: 2.0
+
+OUTPUTS:
+  FOLDER: "~CONFIG/1_appearance_adaptation"
+
+VERSION: 1.17

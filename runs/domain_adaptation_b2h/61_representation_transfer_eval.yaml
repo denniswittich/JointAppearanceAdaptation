@@ -1,0 +1,9 @@
+BASE: ~CONFIG/01_shared_config_eval.yaml
+
+CHECKPOINTS:
+  LOAD_FROM: "~CONFIG/6_representation_transfer/checkpoints/TD_min_ent.pt"
+
+OUTPUTS:
+  FOLDER: "~CONFIG/6_representation_transfer/final_eval_td"
+
+VERSION: 1.17

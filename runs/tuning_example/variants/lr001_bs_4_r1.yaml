@@ -1,0 +1,11 @@
+BASE: ~CONFIG/../bochum_training.yaml
+
+TRAIN:
+  SEG:
+    OPTIM: "sgd"
+    LR: 0.001
+
+OUTPUTS:
+  FOLDER: "~CONFIG/lr_001_bs_4_r1"
+
+VERSION: 1.17

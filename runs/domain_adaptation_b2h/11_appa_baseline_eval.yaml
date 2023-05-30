@@ -1,0 +1,9 @@
+BASE: ~CONFIG/01_shared_config_eval.yaml
+
+CHECKPOINTS:
+  LOAD_FROM: "~CONFIG/1_appearance_adaptation/checkpoints/TD_min_ent.pt"
+
+OUTPUTS:
+  FOLDER: "~CONFIG/1_appearance_adaptation/final_eval_td"
+
+VERSION: 1.17

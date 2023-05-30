@@ -1,0 +1,12 @@
+BASE: ~CONFIG/../bochum_training.yaml
+
+TRAIN:
+  BTSZ: 8
+  SEG:
+    OPTIM: "sgd"
+    LR: 0.02
+
+OUTPUTS:
+  FOLDER: "~CONFIG/lr_02_bs_8_r1"
+
+VERSION: 1.17

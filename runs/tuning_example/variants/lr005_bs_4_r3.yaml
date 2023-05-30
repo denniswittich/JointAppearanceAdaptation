@@ -1,0 +1,13 @@
+BASE: ~CONFIG/../bochum_training.yaml
+
+RANDOM_SEED: 3
+
+TRAIN:
+  SEG:
+    OPTIM: "sgd"
+    LR: 0.005
+
+OUTPUTS:
+  FOLDER: "~CONFIG/lr_005_bs_4_r3"
+
+VERSION: 1.17

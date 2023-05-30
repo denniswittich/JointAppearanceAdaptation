@@ -1,0 +1,27 @@
+BASE: ~CONFIG/00_shared_config_train.yaml
+
+DA:
+  DO_APPA: False
+  DO_REPA: False
+  DO_ENTMIN: False
+  AUX_GEN: False
+  REQUIRES_SD: False
+  BATCH_NORM: 'TD'
+  SHARED_FW: False
+  SEG_PATIENCE: 2
+  DIS_REG: 0.0
+  W_SUP: 0.0
+  W_TRA: 0.0
+  W_GAN: 0.0
+
+TRAIN:
+  SD_SET: ""
+  IT_P_EP: 500
+  N_EP_MAX: 1
+  BTSZ: 64
+  PREFETCH_FACTOR: 2
+
+OUTPUTS:
+  FOLDER: "~CONFIG/4_adaptive_batch_normalization"
+
+VERSION: 1.17

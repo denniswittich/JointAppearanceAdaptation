@@ -1,0 +1,38 @@
+BASE: ~CONFIG/00_shared_config_train.yaml
+
+DA:
+  DO_APPA: True
+  DO_REPA: False
+  DO_ENTMIN: False
+  AUX_GEN: True
+  REQUIRES_SD: True
+  BATCH_NORM: 'SD'
+  SHARED_FW: False
+  SEG_PATIENCE: 2
+  APPA_SHIFT: True
+  DIS_REG: 0.0
+  W_SUP: 1.0
+  W_TRA: 2.0
+  W_GAN: 2.0
+  NON_AUX_BS: 6
+
+OUTPUTS:
+  FOLDER: "~CONFIG/3_appearance_adaptation_aux_gen"
+
+TRAIN:
+  AUX_GEN:
+    OPTIM: "adam"
+    LR: 0.0005
+    BETA1: 0.5
+    BETA2: 0.999
+    WDEC: 0.0
+    LR_DEC: 1.0
+
+AUX_GEN_MODEL:
+  IN_CHN: 100
+  OUT_CHN: 256
+  TYPE: "tconf"
+  DROPRATE: 0.1
+  START_SIZE: 8
+
+VERSION: 1.17

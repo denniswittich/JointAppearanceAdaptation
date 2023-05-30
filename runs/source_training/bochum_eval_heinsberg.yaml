@@ -1,0 +1,40 @@
+BASE: ~CONFIG/bochum_training.yaml
+
+STAGE: "eval"
+MODE: "source_training"
+CUDA: "0"
+VRBS: 3
+RANDOM_SEED: 0
+
+SD: "heinsberg"
+
+TRAIN:
+  SD_SET: ""
+  TD_SET: ""
+
+EVALUATION:
+  METRIC: "mF1"
+  SD_VAL_SET: "val"
+  SD_TEST_SET: "test"
+  IN_SIZE: 256
+  SW_SHIFT: 128
+  FLIP: True
+  ENTROPY: False
+
+CHECKPOINTS:
+  LOAD_FROM: "~CONFIG/bochum/checkpoints/validation.pt"
+  LOAD_STRICT: True
+  SAVE: False
+  LOAD: True
+  LOAD_OPT: False
+
+OUTPUTS:
+  GRID: 250
+  IMAGE_EXT: 'jpg'
+  SAVE_SINGLE: True
+  SAVE_TRAIN: False
+  SAVE_VAL: False
+  SAVE_TEST: True
+  FOLDER: "~CONFIG/bochum/eval_heinsberg"
+
+VERSION: 1.17

@@ -1,0 +1,114 @@
+BASE: ~CONFIG/../local_paths.yaml
+
+STAGE: "eval"
+MODE: "domain_adaptation"
+CUDA: "0"
+VRBS: 3
+RANDOM_SEED: 0
+
+SD: "heinsberg"
+
+DATA:
+  N_CHN: 3
+  NCLS: 5
+  IGNORE_INDEX: 5
+
+AUG:
+  ROTATE: False
+  PRECROP: False
+  FLIP: True
+  RAND_RESCALE: False
+  RESCALE_SYM: False
+  RADIO_SCALE: 0.1
+  INTERPOLATE: False
+
+SEG_MODEL:
+  IN_CHN: 3
+  OUT_CHN: 5
+  TYPE: "unet"
+  UNET:
+    DEPTH: 5
+    BACKBONE: "xception"
+    PRETRAINED: True
+
+AP_AD_MODEL:
+  IN_CHN: 3
+  OUT_CHN: 3
+  TYPE: "res_fcn"
+  RNET:
+    NUM_BLOCKS: 15
+    NUM_FEAT: 256
+    SCALE: 4
+    DROPRATE: 0.0
+
+AP_DIS_MODEL:
+  IN_CHN: 3
+  OUT_CHN: 1
+  TYPE: "cnn"
+  SHIFT: True
+
+TRAIN:
+  BTSZ: 4
+  IN_SIZE: 256
+  NUM_WK: 2
+  PREFETCH_FACTOR: 16
+  SD_SET: ""
+  TD_SET: ""
+  IT_P_EP: 2500
+  N_EP_MAX: 100
+  EARLY_STOPPING_EP: 25
+  LOSS:
+    TYPE: "ace"
+    ACE_POW: 4.0
+    WEIGHTING: ''
+  SEG:
+    OPTIM: "sgd"
+    LR: 0.01
+    BETA1: 0.9
+    BETA2: 0.99
+    WDEC: 0.00001
+    LR_DEC: 1.0
+  AP_AD:
+    OPTIM: "adam"
+    LR: 0.0005
+    BETA1: 0.5
+    BETA2: 0.99
+    WDEC: 0.0
+    LR_DEC: 1.0
+  AP_DIS:
+    OPTIM: "adam"
+    LR: 0.0005
+    BETA1: 0.5
+    BETA2: 0.999
+    WDEC: 0.0
+    LR_DEC: 1.0
+
+EVALUATION:
+  METRIC: "mF1"
+  SD_VAL_SET: ""
+  SD_TEST_SET: "test"
+  TD_VAL_SET: ""
+  TD_TEST_SET: ""
+  IN_SIZE: 256
+  SW_SHIFT: 128
+  FLIP: True
+  ENTROPY: False
+  MIN_ENT_ITER: 3
+
+CHECKPOINTS:
+  LOAD_INIT: ""
+  LOAD_FROM: ""
+  LOAD_STRICT: True
+  SAVE: False
+  LOAD: True
+  LOAD_OPT: False
+
+OUTPUTS:
+  GRID: 250
+  IMAGE_EXT: 'jpg'
+  SAVE_SINGLE: True
+  SAVE_TRAIN: False
+  SAVE_VAL: False
+  SAVE_TEST: True
+
+VERSION: 1.17

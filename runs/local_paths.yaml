@@ -1,0 +1,4 @@
+PATHS:
+  GeoNRW: "~CONFIG/../datasets/GeoNRW/" 
+
+VERSION: 1.17

@@ -1,0 +1,18 @@
+BASE: ~CONFIG/../local_paths.yaml
+
+STAGE: "describe"
+MODE: "dataset"
+VRBS: 3
+
+DATA:
+  N_CHN: 3
+  NCLS: 11
+
+STATS:
+  DOM: "heinsberg"
+  SET: "test"
+  CLASS_STATS: True
+  CHANNEL_STATS: True
+
+
+VERSION: 1.17

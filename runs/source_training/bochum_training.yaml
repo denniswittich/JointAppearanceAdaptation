@@ -1,0 +1,84 @@
+# Base training for AIC using AA-Setup + Validation sets + Early stopping
+
+BASE: ~CONFIG/../local_paths.yaml
+
+STAGE: "train"
+MODE: "source_training"
+CUDA: "0"
+VRBS: 3
+RANDOM_SEED: 0
+
+SD: "bochum"
+
+DATA:
+  N_CHN: 3
+  NCLS: 5
+  IGNORE_INDEX: 5
+
+AUG:
+  ROTATE: False
+  PRECROP: False
+  FLIP: False
+  RAND_RESCALE: False
+  RESCALE_SYM: False
+  RADIO_SCALE: 0.0
+  INTERPOLATE: False
+
+SEG_MODEL:
+  IN_CHN: 3
+  OUT_CHN: 5
+  TYPE: "unet"
+  UNET:
+    DEPTH: 5
+    BACKBONE: "xception"
+    PRETRAINED: True
+
+TRAIN:
+  SD_SET: "train"
+  IT_P_EP: 2500
+  N_EP_MAX: 100
+  EARLY_STOPPING_EP: 10
+  BTSZ: 4
+  IN_SIZE: 256
+  NUM_WK: 4
+  PREFETCH_FACTOR: 4
+  LOSS:
+    TYPE: "ace"
+    ACE_POW: 4
+    WEIGHTING: ''
+  SEG:
+    OPTIM: "sgd"
+    LR: 0.01
+    BETA1: 0.9
+    BETA2: 0.99
+    WDEC: 0.00001
+    LR_DEC: 1.0
+
+EVALUATION:
+  METRIC: "mF1"
+  SD_VAL_SET: "val"
+  SD_TEST_SET: ""
+  IN_SIZE: 256
+  SW_SHIFT: 128
+  FLIP: False
+  ENTROPY: False
+  MIN_ENT_ITER: 10
+
+CHECKPOINTS:
+  LOAD_INIT: ""
+  LOAD_FROM: ""
+  LOAD_STRICT: True
+  SAVE: True
+  LOAD: True
+  LOAD_OPT: True
+
+OUTPUTS:
+  GRID: 0
+  IMAGE_EXT: 'jpg'
+  SAVE_SINGLE: True
+  SAVE_TRAIN: True
+  SAVE_VAL: True
+  SAVE_TEST: False
+  FOLDER: "~CONFIG/bochum"
+
+VERSION: 1.17

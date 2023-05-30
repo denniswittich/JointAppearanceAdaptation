@@ -3,7 +3,6 @@ exp/*
 results
 fast_data/*
 datasets/*
-runs/*
 0_old_results/*
 code/*.bat
 code/__pycache__

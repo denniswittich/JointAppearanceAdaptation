@@ -1,0 +1,41 @@
+BASE: ~CONFIG/00_shared_config_train.yaml
+
+DA:
+  DO_APPA: False
+  DO_REPA: True
+  DO_ENTMIN: False
+  AUX_GEN: False
+  REQUIRES_SD: True
+  BATCH_NORM: 'SD'
+  SHARED_FW: False
+  SEG_PATIENCE: 2
+  APPA_SHIFT: True
+  DIS_REG: 0.0
+  W_SUP: 1.0
+  W_TRA: 0.0
+  W_GAN: 0.0
+  W_REP: [0.0002, 0.001]
+  W_ENT: 0.0
+  REP_LAYER: 'tsai2'
+  REP_ENCODER_STAGE: 2
+
+RP_DIS_MODEL:
+  IN_CHN: [128, 16]
+  OUT_CHN: 1
+  TYPE: "tsai2"
+  SHIFT: True
+  NUM_F_START: 64
+
+TRAIN:
+  RP_DIS:
+    OPTIM: "adam"
+    LR: 0.0001
+    BETA1: 0.9
+    BETA2: 0.99
+    WDEC: 0.0
+    LR_DEC: 1.0
+
+OUTPUTS:
+  FOLDER: "~CONFIG/6_representation_transfer"
+
+VERSION: 1.17
