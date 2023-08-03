@@ -1,6 +1,6 @@
 ## Deep Domain Adaptation by Joint Appearance Adaptation
 
-This repository contains the original code for the methods proposed in [Wittich and Rottensteiner, 2021]( https://doi.org/10.1016/j.isprsjprs.2021.08.004) and [Wittich, 2023]().
+This repository contains the original code for the methods proposed in [Wittich and Rottensteiner, 2021]( https://doi.org/10.1016/j.isprsjprs.2021.08.004) and [Wittich, 2023](https://dgk.badw.de/fileadmin/user_upload/Files/DGK/docs/c-901.pdf).
 The method addresses unsupervised domain adaptation with neural networks based on appearance adaptation.
 
 This implementation is written in python and uses the [pytorch library](https://pytorch.org/).
